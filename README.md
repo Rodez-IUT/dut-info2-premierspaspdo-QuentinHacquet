@@ -1,7 +1,7 @@
 # INFO2-PremiersPasPDO
 
-### NOM : DOE
-### Prénom : John
+### NOM : HACQUET
+### Prénom : Quentin
 ### Groupe de TP : 
-- [X] TD1
-- [ ] TD2
+- [ ] TD1
+- [X] TD2
