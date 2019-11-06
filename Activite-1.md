@@ -1,1 +1,1 @@
-Activité terminée
+Activité terminé
