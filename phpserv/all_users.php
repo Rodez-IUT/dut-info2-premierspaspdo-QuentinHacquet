@@ -31,6 +31,15 @@
 			}
 			$stmt = $pdo->query('SELECT users.id, users.username, users.email, status.name FROM users JOIN status on users.status_id=status.id where status.name="'.$statut.'" AND users.username like "'.$var.'" ');
 			echo "<div class=\"container\">";
+			echo "<div class=\"row\">
+				<div class=\"col-md-6\">
+					<label>Type de médicament :</label> 
+							<select ID="Type" name="Type" class="form-control">
+								echo "<option>"Active account"</option>";
+								echo "<option>"Active account"</option>";
+								echo "<option>"Active account"</option>";
+							</select>
+				</div>";	
 			echo "<div class=\"row\">";
 				echo "<div class=\"col-md-3\"><strong>ID</strong></div>";
 				echo "<div class=\"col-md-3\"><strong>Username</strong></div>";
