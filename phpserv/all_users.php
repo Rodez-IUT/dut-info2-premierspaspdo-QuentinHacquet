@@ -11,6 +11,9 @@
 	</head>
 	<body>
 		<?php 
+			$var="e%";
+			$statut="Active account";
+
 			$host='localhost';
 			$db='my_activities';
 			$user='root';
@@ -26,7 +29,7 @@
 			}catch(PDOException$e){
 				throw new PDOException($e->getMessage(),(int)$e->getCode());
 			}
-			$stmt = $pdo->query('SELECT users.id, users.username, users.email, status.name FROM users JOIN status on users.status_id=status.id ORDER BY status.name');
+			$stmt = $pdo->query('SELECT users.id, users.username, users.email, status.name FROM users JOIN status on users.status_id=status.id where status.name="'.$statut.'" AND users.username like "'.$var.'" ');
 			echo "<div class=\"container\">";
 			echo "<div class=\"row\">";
 				echo "<div class=\"col-md-3\"><strong>ID</strong></div>";
