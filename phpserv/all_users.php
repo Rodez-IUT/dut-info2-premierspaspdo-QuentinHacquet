@@ -50,12 +50,15 @@
 				} else {
 					$start_letter = "";
 				}
+
 				if (strcmp($_GET['account_status'], "active") == 0) {
 					$account_status = 2;
 				} else {
 					$account_status = 1;
 				}
-				$stmt = $pdo->query("SELECT users.id, username, email, name FROM users JOIN status ON status.id = users.status_id WHERE status_id = $account_status AND username LIKE '$start_letter%' ORDER BY username");
+
+				$stmt = $pdo->prepare("SELECT users.id, username, email, name FROM users JOIN status ON status.id = users.status_id WHERE status_id = $account_status AND username LIKE ? ORDER BY username");
+				$stmt->execute([$account_status,$start_letter.'%']);
 			} else {
 				$stmt = $pdo->query("SELECT users.id, username, email, name FROM users JOIN status ON status.id = users.status_id ORDER BY username");
 			}
