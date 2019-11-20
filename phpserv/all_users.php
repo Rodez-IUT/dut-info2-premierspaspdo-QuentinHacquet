@@ -3,8 +3,7 @@
 	<head>
 		<title>All users</title>
 		<meta charset="utf-8 /">
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	</head>
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
 	<body>
 		<?php
 			$host = 'localhost';
@@ -45,13 +44,13 @@
 			<th>Status</th>
 		</tr>
 		<?php	
-			if (isset($_POST['start_letter']) && isset($_POST['account_status'])) {
-				if (strlen($_POST['start_letter']) == 1) {
-					$start_letter = $_POST['start_letter'];
+			if (isset($_GET['start_letter']) && isset($_GET['account_status'])) {
+				if (strlen($_GET['start_letter']) == 1) {
+					$start_letter = $_GET['start_letter'];
 				} else {
 					$start_letter = "";
 				}
-				if (strcmp($_POST['account_status'], "active") == 0) {
+				if (strcmp($_GET['account_status'], "active") == 0) {
 					$account_status = 2;
 				} else {
 					$account_status = 1;
