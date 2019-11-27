@@ -1,0 +1,14 @@
+table td{
+    line-height: 20px;
+    width: 300px;
+    margin-left: 50px;
+    text-align: center;
+}
+
+form{
+	margin-left: 10px;
+}
+
+form h1{
+	font-weight: bold;
+}
