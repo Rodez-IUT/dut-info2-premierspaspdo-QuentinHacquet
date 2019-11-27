@@ -25,6 +25,14 @@
 				throw new PDOException($e->getMessage(),(int)$e->getCode());
 			}
 
+			if (isset($_GET['action'])) {
+
+				$stmt = $pdo->prepare("INSERT INTO action_log (action_name,user_id) VALUES (':action',':userid')");
+				$stmt->bindValue(':action', $_GET['action'], PDO::PARAM_STR);
+				$stmt->bindValue(':userid', (int)$_GET['user_id'], PDO::PARAM_INT);
+				$stmt->execute();
+			}
+
 			echo "<form method=\"post\">";
 			echo "<h1>All Users</h1>";
 			echo "<input type=\"text\" id=\"lettre\" name=\"lettreP\">   </input>";
