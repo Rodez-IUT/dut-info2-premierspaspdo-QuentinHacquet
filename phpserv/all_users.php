@@ -1,76 +1,93 @@
-<!DOCTYPE html>
-<html>
+<html lang="fr">
 	<head>
-		<title>All users</title>
-		<meta charset="utf-8 /">
-		<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+		<meta charset="utf-8">
+		<title>Les excuses du lundi matin</title>
+	  
+		<link href="css/monStyle.css" rel="stylesheet">
+		<link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+		<link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+	</head>
 	<body>
-		<?php
-			$host = 'localhost';
-			$db   = 'my_activities';
-			$user = 'root';
-			$pass = 'root';
-			$charset = 'utf8mb4';
-			$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-			$options = [
-				PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-				PDO::ATTR_EMULATE_PREPARES   => false,
-			];
-			try {
-				 $pdo = new PDO($dsn, $user, $pass, $options);
-			} catch (PDOException $e) {
-				 throw new PDOException($e->getMessage(), (int)$e->getCode());
+		<?php 
+			$host='localhost';
+			$db='my_activities';
+			$user='root';
+			$pass='root';
+			$charset='utf8mb4';
+			$dsn="mysql:host=$host;dbname=$db;charset=$charset";
+			$options=[
+				PDO::ATTR_ERRMODE				=>PDO::ERRMODE_EXCEPTION,
+				PDO::ATTR_DEFAULT_FETCH_MODE	=>PDO::FETCH_ASSOC,
+				PDO::ATTR_EMULATE_PREPARES		=>false,];
+			try{
+				$pdo=new PDO($dsn,$user,$pass,$options);
+			}catch(PDOException$e){
+				throw new PDOException($e->getMessage(),(int)$e->getCode());
 			}
-		?>
-		
-		<h1>All users</h1>
-		<form method="post" action="all_users.php">
-			Start with letter :
-			<input type="text" name="start_letter" />
-			and status is :
-			<select name="account_status">
-				<option value="active">Active account</option>
-				<option value="waiting">Waiting for account validation</option>
-			</select>
-			<input type="submit" value="OK" />
-		</form>
-		<br /><br />
-		<table class="table">
-		<tr>
-			<th>ID</th>
-			<th>Username</th>
-			<th>Email</th>
-			<th>Status</th>
-		</tr>
-		<?php	
-			if (isset($_GET['start_letter']) && isset($_GET['account_status'])) {
-				if (strlen($_GET['start_letter']) == 1) {
-					$start_letter = $_GET['start_letter'];
-				} else {
-					$start_letter = "";
-				}
 
-				if (strcmp($_GET['account_status'], "active") == 0) {
-					$account_status = 2;
+			echo "<form method=\"post\">";
+			echo "<h1>All Users</h1>";
+			echo "<input type=\"text\" id=\"lettre\" name=\"lettreP\">   </input>";
+			echo "<select id=\"status\" name=\"statusP\">";
+			echo "<option value=\"1\">Waiting for account validation</option>";
+			echo "<option value=\"2\">Active Account</option>";
+			echo "<option value=\"3\">Waiting for account deletion</option>";
+			echo "</select>";
+			echo "<input type=\"submit\" id=\"bouton\" name=\"Chercher\"></input>";
+			echo "</form>";
+			
+			if (isset($_POST['statusP'])) {
+				if(isset($_POST['lettreP']) && $_POST['lettreP'] != "") {
+					$lettre = $_POST['lettreP'];
 				} else {
-					$account_status = 1;
+					$lettre = "";
 				}
-
-				$stmt = $pdo->prepare("SELECT users.id, username, email, name FROM users JOIN status ON status.id = users.status_id WHERE status_id = $account_status AND username LIKE ? ORDER BY username");
-				$stmt->execute([$account_status,$start_letter.'%']);
+				$statusVoulu = $_POST['statusP'];
+				$stmt = $pdo->prepare("SELECT users.id,username,email,status.name,status_id 
+								 FROM users 
+								 JOIN status 
+								 ON users.status_id = status.id 
+								 WHERE status.id = :statusVoulu 
+								 AND username 
+								 LIKE :lettre
+								 ORDER BY username");
+				$stmt->bindValue(':statusVoulu', $statusVoulu, PDO::PARAM_INT);
+				$stmt->bindValue(':lettre', $lettre.'%', PDO::PARAM_STR);
+				$stmt->execute();
+				
 			} else {
-				$stmt = $pdo->query("SELECT users.id, username, email, name FROM users JOIN status ON status.id = users.status_id ORDER BY username");
+				$stmt = $pdo->query("SELECT users.id,username,email,status.name ,status_id 
+								 FROM users 
+								 JOIN status 
+								 ON users.status_id = status.id 
+								 ORDER BY username");
 			}
-			while ($row = $stmt->fetch()) {
-				echo '<tr>';
-				echo '<td>' . $row['id'] . '</td>';
-				echo '<td>' . $row['username'] . '</td>';
-				echo '<td>' . $row['email'] . '</td>';
-				echo '<td>' . $row['name'] . '</td>';
-				echo '</tr>';
+			
+			
+			echo "<table border=\"1px\">";
+			echo "<tr>";
+				echo "<td>Id</td>";
+				echo "<td>Username</td>";
+				echo "<td>Email</td>";
+				echo "<td>Status</td>";
+				echo "<td></td>";
+				echo "</tr>";
+			while($row = $stmt->fetch()){
+				echo "<tr>";
+				echo "<td>".$row['id']."</td>";
+				echo "<td>".$row['username']."</td>";
+				echo "<td>".$row['email']."</td>";
+				echo "<td>".$row['name']."</td>";
+				if ($row['status_id'] != 3) {
+					echo "<td>";
+					echo "<form method=\"get\" action=\"askDeletion\">";
+					echo "<a href=\"all_users.php?action=askDeletion&status_id=3&user_id=".$row['id']."\">Ask Deletion</a>";
+					echo "</form>";
+					echo "</td>";
+				}
+				echo "</tr>";
 			}
+			echo "</table>";
 		?>
-		</table>
 	</body>
 </html>
